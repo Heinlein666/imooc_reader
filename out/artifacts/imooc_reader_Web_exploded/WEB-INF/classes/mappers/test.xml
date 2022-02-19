@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.imooc.reader.mapper.TestMapper">
-    <insert id="insertSample">
-        INSERT INTO t_test(content) VALUE('测试内容')
-    </insert>
-</mapper>
