@@ -42,4 +42,16 @@ public class BookServiceImpl implements BookService {
         Page<Book> pageObject = bookMapper.selectPage(p, queryWrapper);
         return pageObject;
     }
+
+
+    /**
+     * query book object by book Id
+     * @param bookId
+     * @return
+     */
+    @Override
+    public Book selectById(Long bookId) {
+        Book book = bookMapper.selectById(bookId);
+        return book;
+    }
 }
