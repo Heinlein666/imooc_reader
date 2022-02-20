@@ -77,4 +77,26 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+<!--    Configure kaptcha-->
+    <bean id="kaptchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+        <property name="config">
+            <bean class="com.google.code.kaptcha.util.Config">
+                <constructor-arg>
+                    <props>
+<!--                        Captchas do not generate borders-->
+                        <prop key="kaptcha.border">no</prop>
+<!--                        The width of the verification code is 120 pixels-->
+                        <prop key="kaptcha.image.width">120</prop>
+<!--                        The color of the verification code is blue-->
+                        <prop key="kaptcha.textproducer.font.color">blue</prop>
+<!--                        Each character has a maximum of 40 pixels-->
+                        <prop key="kaptcha.textproducer.font.size">40</prop>
+<!--                        The verification code contains 4 characters-->
+                        <prop key="kaptcha.textproducer.char.length">4</prop>
+                    </props>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
 </beans>
