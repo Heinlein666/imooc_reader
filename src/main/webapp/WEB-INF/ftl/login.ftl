@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>会员注册-慕课书评网</title>
+    <title>会员登录-慕课书评网</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
-	
-	<link rel="stylesheet" href="/resources/bootstrap/bootstrap.css">
-    <link rel="stylesheet" href="/resources/raty/lib/jquery.raty.css">
-    <script src="/resources/jquery.3.3.1.min.js"></script>
-    <script src="/resources/bootstrap/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.itlaoqi.com./resources/bootstrap4/css/bootstrap.css">
+    <link rel="stylesheet" href="./resources/raty/lib/jquery.raty.css">
+
+    <script src="http://cdn.itlaoqi.com./resources/jquery.3.3.1.min.js"></script>
+    <script src="http://cdn.itlaoqi.com./resources/bootstrap4/js/bootstrap.min.js"></script>
     <style>
         .container {
             padding: 0px;
@@ -53,24 +53,21 @@
     <div class="container mt-2 p-2 m-0">
         <form id="frmLogin">
             <div class="passport bg-white">
-                <h4 class="float-left">会员注册</h4>
-                <h6 class="float-right pt-2"><a href="/login.html">会员登录</a></h6>
+                <h4 class="float-left">会员登录</h4>
+                <h6 class="float-right pt-2"><a href="/register.html">会员注册</a></h6>
                 <div class="clearfix"></div>
                 <div class="alert d-none mt-2" id="tips" role="alert">
 
                 </div>
 
                 <div class="input-group  mt-2 ">
-                    <input type="text" id="username" name="username" class="form-control p-4" placeholder="请输入用户名">
+                    <input type="text" id="username" name="username" class="form-control p-4" placeholder="请输入用户名"
+                           aria-label="Username" aria-describedby="basic-addon1">
                 </div>
 
                 <div class="input-group  mt-4 ">
-                    <input id="password" name="password" class="form-control p-4" placeholder="请输入密码" type="password">
-                </div>
-
-                <div class="input-group  mt-4 ">
-                    <input type="text" id="nickname" name="nickname" class="form-control p-4" placeholder="请输入昵称"
-                    >
+                    <input id="password" name="password" class="form-control p-4" placeholder="请输入密码" type="password"
+                           aria-describedby="basic-addon1">
                 </div>
 
                 <div class="input-group mt-4 ">
@@ -78,38 +75,20 @@
                         <input type="text" id="verifyCode" name="vc" class="form-control p-4" placeholder="验证码">
                     </div>
                     <div class="col-4 p-0 pl-2 pt-0">
-						<!-- Captcha image -->
                         <img id="imgVerifyCode" src="/verify_code"
                              style="width: 120px;height:50px;cursor: pointer">
                     </div>
 
                 </div>
 
-                <a id="btnSubmit" class="btn btn-success  btn-block mt-4 text-white pt-3 pb-3">注&nbsp;&nbsp;&nbsp;&nbsp;册</a>
+                <a id="btnSubmit" class="btn btn-success  btn-block mt-4 text-white pt-3 pb-3">登&nbsp;&nbsp;&nbsp;&nbsp;录</a>
             </div>
         </form>
 
     </div>
 </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                您已注册成功
-            </div>
-            <div class="modal-footer">
-                <a href="/login.html" type="button" class="btn btn-primary">去登录</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <script>
-	//Controls the display and hiding of error messages
     function showTips(isShow, css, text) {
         if (isShow) {
             $("#tips").removeClass("d-none")
@@ -124,25 +103,18 @@
             $("#tips").addClass("alert")
         }
     }
-	//Resend the request and refresh the verification code
     function reloadVerifyCode(){
-        $("#imgVerifyCode").attr("src", "verify_code?ts=" + new Date().getTime());
+        $("#imgVerifyCode").attr("src", "/verify_code?ts=" + new Date().getTime());
     }
-	
-	//Click the verification code image to refresh the verification code
     $("#imgVerifyCode").click(function () {
         reloadVerifyCode();
     });
-	
-	//Click the Submit button to initiate an ajax request to /registe
-	//Submitting a request contains four parameters
-	//vc: Enter the verification code username: username password: password nickname: nickname
+
     $("#btnSubmit").click(function () {
-		//Form validation
         var username = $.trim($("#username").val());
-        var regex = /^.{6,10}$/;
+        var regex = /^.{1,10}$/;
         if (!regex.test(username)) {
-            showTips(true, "alert-danger", "用户名请输入正确格式（6-10位）");
+            showTips(true, "alert-danger", "用户名请输入正确格式（1-10位）");
             return;
         } else {
             showTips(false);
@@ -151,7 +123,7 @@
         var password = $.trim($("#password").val());
 
         if (!regex.test(password)) {
-            showTips(true, "alert-danger", "密码请输入正确格式（6-10位）");
+            showTips(true, "alert-danger", "密码请输入正确格式（1-10位）");
             return;
         } else {
             showTips(false);
@@ -161,26 +133,18 @@
 
         $btnReg.text("正在处理...");
         $btnReg.attr("disabled", "disabled");
-		
-		//Send an ajax request
         $.ajax({
-            url: "/register",
+            url: "/check_login",
             type: "post",
             dataType: "json",
             data: $("#frmLogin").serialize(),
             success: function (data) {
-				//Result processing, according to the server return code to determine the server processing status
-				//The server asks to return JSON format:
-				//{"code":"0","msg":"Process the message"}
                 if (data.code == "0") {
-					//The Registration Success dialog box is displayed
-                    $("#exampleModalCenter").modal({});
-                    $("#exampleModalCenter").modal("show");
+                    window.location = "/?ts=" + new Date().getTime();
                 } else {
-					//The server checks an exception, prompting an error message
                     showTips(true, "alert-danger", data.msg);
                     reloadVerifyCode();
-                    $btnReg.text("注    册");
+                    $btnReg.text("登录");
                     $btnReg.removeAttr("disabled");
                 }
             }

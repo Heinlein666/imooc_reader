@@ -21,9 +21,9 @@ public class MemberServiceImpl implements MemberService {
     private MemberMapper memberMapper;
     /**
      * Member registration, creation of new members
-     * @param username
-     * @param password
-     * @param nickname
+     * @param username username
+     * @param password password
+     * @param nickname nickname
      * @return new member object
      */
     @Override
@@ -43,6 +43,27 @@ public class MemberServiceImpl implements MemberService {
         member.setSalt(salt);
         member.setCreateTime(new Date());
         memberMapper.insert(member);
+        return member;
+    }
+
+    /**
+     * Login check
+     * @param username username
+     * @param password password
+     * @return Member object
+     */
+    @Override
+    public Member checkLogin(String username, String password) {
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        Member member = memberMapper.selectOne(queryWrapper);
+        if (member == null) {
+            throw new BusinessException("M02", "用户不存在");
+        }
+        String md5 = MD5Utils.md5Digest(password, member.getSalt());
+        if (!md5.equals(member.getPassword())){
+            throw new BusinessException("M03", "输入密码有误");
+        }
         return member;
     }
 }

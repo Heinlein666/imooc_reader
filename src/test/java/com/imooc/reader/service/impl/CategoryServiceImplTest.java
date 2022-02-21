@@ -1,6 +1,7 @@
-package com.imooc.reader.service;
+package com.imooc.reader.service.impl;
 
 import com.imooc.reader.entity.Category;
+import com.imooc.reader.service.CategoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
