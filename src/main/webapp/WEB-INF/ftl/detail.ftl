@@ -46,10 +46,10 @@
 
     </style>
     <script>
-        // start evaluation
+        // star evaluation
         $.fn.raty.defaults.path = '/resources/raty/lib/images';
         $(function () {
-            $(".stars").raty({readOnly: true});
+            $(".stars").raty({readOnly: true}); //star component read only
         })
 
         $(function (){
@@ -80,6 +80,37 @@
                             $("*[data-read-state='" + readState + "']").addClass("highlight");
                         }
                     },"json")
+                });
+
+                $("#btnEvaluation").click(function (){
+                    $("#score").raty(); //Converted to start scoring component
+                    $("#dlgEvaluation").modal("show"); //Displays the Short Comment dialog box
+                })
+                $("#btnSubmit").click(function (){
+                    var score = $("#score").raty("score");
+                    var content = $("#content").val();
+                    if (score == 0 || $.trim(content) == ""){
+                        return;
+                    }
+                    $.post("/evaluate", {
+                        score:score,
+                        bookId: ${book.bookId},
+                        memberId: ${loginMember.memberId},
+                        content:content
+                    },function(json){
+                        if(json.code == "0") {
+                            window.location.reload(); //Refresh the current page
+                        }
+                    }, "json")
+                })
+            // Comments like
+            $("*[data-evaluation-id]").click(function(){
+                    var evaluationId = $(this).data("evaluation-id");
+                    $.post("/enjoy/" + new Date().getTime(), {evaluationId:evaluationId}, function(json){
+                        if(json.code == "0") {
+                            $("*[data-evaluation-id='" + evaluationId + "'] span").text(json.evaluation.enjoy);
+                        }
+                    }, "json")
                 })
             </#if>
         })
@@ -154,7 +185,7 @@
         <#list evaluationList as evaluation>
             <div>
                 <div>
-                    <span class="pt-1 small text-black-50 mr-2">${evaluation.createTime?string('MM-dd')}</span>
+                    <span class="pt-1 small text-black-50 mr-2">${evaluation.createTime?string('yyyy-MM-dd')}</span>
                     <span class="mr-2 small pt-1">${evaluation.member.nickname}</span>
                     <span class="stars mr-2" data-score="${evaluation.score}"></span>
 
@@ -197,7 +228,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <h6>为"从 0 开始学爬虫"写短评</h6>
+                <h6>为"${book.bookName}"写短评</h6>
                 <form id="frmEvaluation">
                     <div class="input-group  mt-2 ">
                         <span id="score"></span>

@@ -1,10 +1,12 @@
 package com.imooc.reader.controller;
 
+import com.imooc.reader.entity.Evaluation;
 import com.imooc.reader.entity.Member;
 import com.imooc.reader.service.MemberService;
 import com.imooc.reader.service.exception.BusinessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,6 +95,39 @@ public class MemberController {
             memberService.updateMemberReadState(memberId, bookId, readState);
             result.put("code", "0");
             result.put("msg", "success");
+        } catch (BusinessException ex) {
+            ex.printStackTrace();
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
+
+    @PostMapping("/evaluate")
+    @ResponseBody
+    public Map<String, String> evaluate(Long memberId, Long bookId, Integer score, String content) {
+        Map<String, String> result = new HashMap<>();
+        try {
+            memberService.evaluate(memberId, bookId, score, content);
+            result.put("code", "0");
+            result.put("msg", "success");
+        } catch (BusinessException ex) {
+            ex.printStackTrace();
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
+
+    @PostMapping("/enjoy/{likeTime}")
+    @ResponseBody
+    public Map<String, Object> evaluate(Long evaluationId, @PathVariable("likeTime") Long likeTime ) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            Evaluation evaluation = memberService.enjoy(evaluationId);
+            result.put("code", "0");
+            result.put("msg", "success");
+            result.put("evaluation", evaluation);
         } catch (BusinessException ex) {
             ex.printStackTrace();
             result.put("code", ex.getCode());

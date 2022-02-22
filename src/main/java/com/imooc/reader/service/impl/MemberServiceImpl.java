@@ -1,8 +1,10 @@
 package com.imooc.reader.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.imooc.reader.entity.Evaluation;
 import com.imooc.reader.entity.Member;
 import com.imooc.reader.entity.MemberReadState;
+import com.imooc.reader.mapper.EvaluationMapper;
 import com.imooc.reader.mapper.MemberMapper;
 import com.imooc.reader.mapper.MemberReadStateMapper;
 import com.imooc.reader.service.MemberService;
@@ -24,6 +26,8 @@ public class MemberServiceImpl implements MemberService {
     private MemberMapper memberMapper;
     @Resource
     private MemberReadStateMapper memberReadStateMapper;
+    @Resource
+    private EvaluationMapper evaluationMapper;
     /**
      * Member registration, creation of new members
      * @param username username
@@ -113,5 +117,40 @@ public class MemberServiceImpl implements MemberService {
             memberReadStateMapper.updateById(memberReadState);
         }
         return memberReadState;
+    }
+
+    /**
+     * Post a new short review
+     * @param memberId member Id
+     * @param bookId book Id
+     * @param score score of the book
+     * @param content evaluation content
+     * @return Evaluation
+     */
+    @Override
+    public Evaluation evaluate(Long memberId, Long bookId, Integer score, String content) {
+        Evaluation evaluation = new Evaluation();
+        evaluation.setMemberId(memberId);
+        evaluation.setBookId(bookId);
+        evaluation.setScore(score);
+        evaluation.setContent(content);
+        evaluation.setCreateTime(new Date());
+        evaluation.setState("enable");
+        evaluation.setEnjoy(0);
+        evaluationMapper.insert(evaluation);
+        return evaluation;
+    }
+
+    /**
+     * Comments like
+     * @param evaluationId evaluation Id
+     * @return Evaluation
+     */
+    @Override
+    public Evaluation enjoy(Long evaluationId) {
+        Evaluation evaluation = evaluationMapper.selectById(evaluationId);
+        evaluation.setEnjoy(evaluation.getEnjoy() + 1);
+        evaluationMapper.updateById(evaluation);
+        return evaluation;
     }
 }

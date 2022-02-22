@@ -17,7 +17,8 @@ public class TestController {
 
     @GetMapping("/test/t2")
     @ResponseBody
-    public Map test2() {
+    public Map test2(String test) {
+        System.out.println("test :" + test);
         Map result = new HashMap();
         result.put("test", "测试文本");
         return result;

@@ -1,7 +1,10 @@
 package com.imooc.reader.service;
 
+import com.imooc.reader.entity.Evaluation;
 import com.imooc.reader.entity.Member;
 import com.imooc.reader.entity.MemberReadState;
+
+import java.util.Date;
 
 public interface MemberService {
     /**
@@ -37,4 +40,21 @@ public interface MemberService {
      * @return MemberReadState
      */
     MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState);
+
+    /**
+     * Post a new short review
+     * @param memberId member Id
+     * @param bookId book Id
+     * @param score score of the book
+     * @param content evaluation content
+     * @return Evaluation
+     */
+    Evaluation evaluate(Long memberId, Long bookId, Integer score, String content);
+
+    /**
+     * Comments like
+     * @param evaluationId evaluation Id
+     * @return Evaluation
+     */
+    Evaluation enjoy(Long evaluationId);
 }
