@@ -153,4 +153,5 @@ public class MemberServiceImpl implements MemberService {
         evaluationMapper.updateById(evaluation);
         return evaluation;
     }
+
 }

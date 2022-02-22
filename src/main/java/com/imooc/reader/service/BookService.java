@@ -20,4 +20,29 @@ public interface BookService {
      * @return
      */
     Book selectById(Long bookId);
+
+    /**
+     * Update book ratings, number of reviews
+     */
+    void updateEvaluation();
+
+    /**
+     * Create a new book
+     * @param book
+     * @return
+     */
+    Book createBook(Book book);
+
+    /**
+     * Update book
+     * @param book
+     * @return
+     */
+    Book updateBook(Book book);
+
+    /**
+     * delete book and relate data
+     * @param bookId
+     */
+    void deleteBook(Long bookId);
 }

@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.imooc.reader.entity.Book;
+import com.imooc.reader.entity.Evaluation;
+import com.imooc.reader.entity.MemberReadState;
 import com.imooc.reader.mapper.BookMapper;
+import com.imooc.reader.mapper.EvaluationMapper;
+import com.imooc.reader.mapper.MemberReadStateMapper;
 import com.imooc.reader.service.BookService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,6 +21,10 @@ import javax.annotation.Resource;
 public class BookServiceImpl implements BookService {
     @Resource
     private BookMapper bookMapper;
+    @Resource
+    private MemberReadStateMapper memberReadStateMapper;
+    @Resource
+    private EvaluationMapper evaluationMapper;
     /**
      * Query books by page
      * @param categoryId
@@ -53,5 +61,54 @@ public class BookServiceImpl implements BookService {
     public Book selectById(Long bookId) {
         Book book = bookMapper.selectById(bookId);
         return book;
+    }
+
+    /**
+     * Update book evaluation, number of reviews
+     */
+    @Transactional
+    @Override
+    public void updateEvaluation() {
+        bookMapper.updateEvaluation();
+    }
+
+    /**
+     * create a new book
+     * @param book
+     * @return
+     */
+    @Transactional
+    @Override
+    public Book createBook(Book book) {
+        bookMapper.insert(book);
+        return book;
+    }
+
+    /**
+     * Update book
+     * @param book
+     * @return
+     */
+    @Override
+    @Transactional
+    public Book updateBook(Book book) {
+        bookMapper.updateById(book);
+        return book;
+    }
+
+    /**
+     * delete book and relate data
+     * @param bookId
+     */
+    @Override
+    @Transactional
+    public void deleteBook(Long bookId) {
+        bookMapper.deleteById(bookId);
+        QueryWrapper<MemberReadState> mrsQueryWrapper = new QueryWrapper<>();
+        mrsQueryWrapper.eq("book_id", bookId);
+        memberReadStateMapper.delete(mrsQueryWrapper);
+        QueryWrapper<Evaluation> evaluationQueryWrapper = new QueryWrapper<>();
+        evaluationQueryWrapper.eq("book_id", bookId);
+        evaluationMapper.delete(evaluationQueryWrapper);
     }
 }

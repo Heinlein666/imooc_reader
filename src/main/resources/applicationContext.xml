@@ -99,4 +99,11 @@
             </bean>
         </property>
     </bean>
+<!--    Enable scheduled task annotation mode-->
+    <task:annotation-driven/>
+
+<!--    Spring mvc file upload process-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
 </beans>
