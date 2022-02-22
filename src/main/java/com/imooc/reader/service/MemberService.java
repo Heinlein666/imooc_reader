@@ -1,6 +1,7 @@
 package com.imooc.reader.service;
 
 import com.imooc.reader.entity.Member;
+import com.imooc.reader.entity.MemberReadState;
 
 public interface MemberService {
     /**
@@ -18,5 +19,22 @@ public interface MemberService {
      * @param password password
      * @return Member object
      */
-    public Member checkLogin(String username, String password);
+    Member checkLogin(String username, String password);
+
+    /**
+     * Gets the reading status
+     * @param memberId memberId
+     * @param bookId bookId
+     * @return MemberReadStateMapper
+     */
+    MemberReadState selectMemberReadState(Long memberId, Long bookId);
+
+    /**
+     *Update the user reading status
+     * @param memberId member Id
+     * @param bookId  book Id
+     * @param readState readState
+     * @return MemberReadState
+     */
+    MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState);
 }

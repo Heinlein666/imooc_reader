@@ -76,4 +76,27 @@ public class MemberController {
         }
         return result;
     }
+
+    /**
+     * Update the reading status you want to see/have seen
+     * @param memberId member Id
+     * @param bookId book Id
+     * @param readState read State
+     * @return Processing result
+     */
+    @PostMapping("/update_read_state")
+    @ResponseBody
+    public Map<String, String> updateReadState(Long memberId, Long bookId, Integer readState) {
+        Map<String, String> result = new HashMap<>();
+        try {
+            memberService.updateMemberReadState(memberId, bookId, readState);
+            result.put("code", "0");
+            result.put("msg", "success");
+        } catch (BusinessException ex) {
+            ex.printStackTrace();
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
 }

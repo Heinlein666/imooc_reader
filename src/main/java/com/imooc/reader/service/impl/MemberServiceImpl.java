@@ -2,11 +2,14 @@ package com.imooc.reader.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.imooc.reader.entity.Member;
+import com.imooc.reader.entity.MemberReadState;
 import com.imooc.reader.mapper.MemberMapper;
+import com.imooc.reader.mapper.MemberReadStateMapper;
 import com.imooc.reader.service.MemberService;
 import com.imooc.reader.service.exception.BusinessException;
 import com.imooc.reader.utils.MD5Utils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -19,6 +22,8 @@ import java.util.Random;
 public class MemberServiceImpl implements MemberService {
     @Resource
     private MemberMapper memberMapper;
+    @Resource
+    private MemberReadStateMapper memberReadStateMapper;
     /**
      * Member registration, creation of new members
      * @param username username
@@ -54,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public Member checkLogin(String username, String password) {
-        QueryWrapper queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Member> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         Member member = memberMapper.selectOne(queryWrapper);
         if (member == null) {
@@ -65,5 +70,48 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException("M03", "输入密码有误");
         }
         return member;
+    }
+
+    /**
+     * Gets the reading status
+     * @param memberId memberId
+     * @param bookId bookId
+     * @return MemberReadStateMapper
+     */
+    @Override
+    public MemberReadState selectMemberReadState(Long memberId, Long bookId) {
+        QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("book_id", bookId);
+        queryWrapper.eq("member_id", memberId);
+        MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
+        return memberReadState ;
+    }
+
+    /**
+     *Update the user reading status
+     * @param memberId member Id
+     * @param bookId  book Id
+     * @param readState readState
+     * @return MemberReadState
+     */
+    @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
+    public MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState) {
+        QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("member_id", memberId);
+        queryWrapper.eq("book_id", bookId);
+        MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
+        if (memberReadState == null) {
+            memberReadState = new MemberReadState();
+            memberReadState.setMemberId(memberId);
+            memberReadState.setBookId(bookId);
+            memberReadState.setReadState(readState);
+            memberReadState.setCreateTime(new Date());
+            memberReadStateMapper.insert(memberReadState);
+        }else{
+            memberReadState.setReadState(readState);
+            memberReadStateMapper.updateById(memberReadState);
+        }
+        return memberReadState;
     }
 }

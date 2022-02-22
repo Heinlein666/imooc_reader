@@ -46,9 +46,42 @@
 
     </style>
     <script>
+        // start evaluation
         $.fn.raty.defaults.path = '/resources/raty/lib/images';
         $(function () {
             $(".stars").raty({readOnly: true});
+        })
+
+        $(function (){
+            // Determine whether the member is logged in
+            <#if memberReadState ??>
+            // Displays the reading status
+                $("*[data-read-state='${memberReadState.readState}']").addClass("highlight");
+            </#if>
+            <#if !loginMember ??>
+            // If there is no sign-in prompt to sign in
+            $("*[data-read-state],#btnEvaluation,*[data-evakuation-id]").click(function (){
+                $("#exampleModalCenter").modal("show");
+            });
+            </#if>
+
+            <#if loginMember ??>
+                $("*[data-read-state]").click(function(){
+                    // Member reading status
+                    var readState = $(this).data("read-state");
+                    // Send a member read status update request
+                    $.post("/update_read_state", {
+                        memberId:${loginMember.memberId},
+                        bookId:${book.bookId},
+                        readState:readState
+                    },function(json){
+                        if (json.code == "0"){
+                            $("*[data-read-state]").removeClass("highlight");
+                            $("*[data-read-state='" + readState + "']").addClass("highlight");
+                        }
+                    },"json")
+                })
+            </#if>
         })
     </script>
 </head>
