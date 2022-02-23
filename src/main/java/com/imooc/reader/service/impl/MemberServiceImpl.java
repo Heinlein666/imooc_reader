@@ -62,6 +62,7 @@ public class MemberServiceImpl implements MemberService {
      * @return Member object
      */
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
     public Member checkLogin(String username, String password) {
         QueryWrapper<Member> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
@@ -83,6 +84,7 @@ public class MemberServiceImpl implements MemberService {
      * @return MemberReadStateMapper
      */
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
     public MemberReadState selectMemberReadState(Long memberId, Long bookId) {
         QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("book_id", bookId);
@@ -99,7 +101,6 @@ public class MemberServiceImpl implements MemberService {
      * @return MemberReadState
      */
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
     public MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState) {
         QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("member_id", memberId);

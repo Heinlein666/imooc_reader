@@ -53,6 +53,12 @@ public class BookController {
         return pageObject;
     }
 
+    /**
+     * show book details
+     * @param id
+     * @param session
+     * @return
+     */
     @GetMapping("/book/{id}")
     public ModelAndView showDetail(@PathVariable("id") Long id, HttpSession session) {
         Book book = bookService.selectById(id);

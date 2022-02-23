@@ -2,6 +2,7 @@ package com.imooc.reader.controller.management;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.imooc.reader.entity.Book;
+import com.imooc.reader.entity.User;
 import com.imooc.reader.service.BookService;
 import com.imooc.reader.service.exception.BusinessException;
 import org.jsoup.Jsoup;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -27,7 +29,11 @@ public class MBookController {
     @Resource
     private BookService bookService;
     @GetMapping("/index.html")
-    public ModelAndView showBook() {
+    public ModelAndView showBook(HttpSession session) {
+        User user = (User)session.getAttribute("loginUser");
+        if (user == null) {
+            return new ModelAndView("/management/login");
+        }
         return new ModelAndView("/management/book");
     }
 
@@ -91,7 +97,7 @@ public class MBookController {
             page = 1;
         }
         if (limit == null) {
-            limit = 10;
+            limit = 20;
         }
         IPage<Book> pageObject = bookService.paging(null, null, page, limit);
         // layui need this responded
@@ -126,7 +132,7 @@ public class MBookController {
      */
     @PostMapping("/update")
     @ResponseBody
-    public Map updateBook(Book book) {
+    public Map<String, String> updateBook(Book book) {
         Map<String, String> result = new HashMap<>();
         try {
             Book rawBook = bookService.selectById(book.getBookId());

@@ -18,6 +18,8 @@ public class Evaluation {
     private Date createTime;
     private Integer enjoy;
     private String state;
+    private String disableReason;
+    private Date disableTime;
     @TableField(exist = false) //There is no book column in the evaluation table and will not participate in sql queries
     private Book book;
     @TableField(exist = false)
@@ -101,5 +103,21 @@ public class Evaluation {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public String getDisableReason() {
+        return disableReason;
+    }
+
+    public void setDisableReason(String disableReason) {
+        this.disableReason = disableReason;
+    }
+
+    public Date getDisableTime() {
+        return disableTime;
+    }
+
+    public void setDisableTime(Date disableTime) {
+        this.disableTime = disableTime;
     }
 }

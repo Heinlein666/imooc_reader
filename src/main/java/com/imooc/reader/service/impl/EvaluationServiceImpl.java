@@ -1,6 +1,8 @@
 package com.imooc.reader.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.imooc.reader.entity.Book;
 import com.imooc.reader.entity.Evaluation;
 import com.imooc.reader.entity.Member;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service("evaluationService")
@@ -43,5 +46,35 @@ public class EvaluationServiceImpl implements EvaluationService {
             eva.setBook(book);
         }
         return evaluationList;
+    }
+
+    /**
+     * Query evaluation by page
+     * @param page
+     * @param row
+     * @return page object
+     */
+    @Override
+    public IPage<Evaluation> paging(Integer page, Integer row) {
+        Page<Evaluation> p = evaluationMapper.selectPage(new Page<>(page, row), new QueryWrapper<>());
+        for (Evaluation eva : p.getRecords()) {
+            eva.setBook(bookMapper.selectById(eva.getBookId()));
+            eva.setMember(memberMapper.selectById(eva.getMemberId()));
+        }
+        return p;
+    }
+
+
+    /**
+     * change evaluation state
+     * @param evaluationId
+     * @param state
+     * @param disableReason
+     * @param disableTime
+     */
+    @Override
+    @Transactional
+    public void changeState(Long evaluationId, String state, String disableReason, Date disableTime) {
+        evaluationMapper.changeState(evaluationId, state, disableReason, disableTime);
     }
 }
